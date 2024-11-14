@@ -1,0 +1,1 @@
+import Producto from '../models/Product.ts'
