@@ -72,7 +72,11 @@ export default function ChatTest() {
       <input type="text" className="message-input" placeholder="Type message..." defaultValue={""} />
       <button type="submit" className="message-submit">Send</button>
     </form>
-  </div>
+      </div>
+      <div style={{ borderRadius: 10,position: 'fixed', bottom: 100, right: 0, color:'grey', fontSize: 40 ,backgroundColor: 'rgba(0, 0, 0, 0.5', padding: 20, marginRight: 100 }}>
+        Reiniciar chat (recomendado) <button onClick={() => setChat([])}
+          style={{ color: 'white', backgroundColor: '#248A52', borderRadius: 10, fontSize:40, boxShadow: '0px 0px 10px 4px rgba(0, 0, 0, 0.4)', border: 'none', padding: 10 }}>RESET</button>
+        </div>
   <div className="bg" />
 </div>
     )
