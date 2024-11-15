@@ -5,7 +5,8 @@ import { chatPrompt } from './services/chatbotService.ts'
 import Products from './models/Product.ts'
 
 const app = express()
-//await connectDB()
+await connectDB()
+
 app.use(express.json())
 
 app.use(
