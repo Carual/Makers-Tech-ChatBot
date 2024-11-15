@@ -2,6 +2,9 @@
 
 Makers chatBot, es un chat que conecta las preguntas que hace un cliente y proporciona información real del estado actual
 
+_Video de presentación_:
+[![Watch the video](https://i9.ytimg.com/vi/AZMUM6lF4Lw/mqdefault.jpg?sqp=CJjV3rkG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLCSXIhdE3nEniO0kGEdNQqVKUatiw)](https://youtu.be/AZMUM6lF4Lw?si=95Nj2fk2ZwhOhuWS)
+
 # Como funciona
 
 Cuando el Usuario pregunta sobre algo, el servidor obtiene el prompt y le pide a un LLM (a eleccion del usuario) que identifique si el usuario hizo un prompt de conversacion, o de busqueda, y basado en este, el LLM devuelve una respuesta o un query, si este es un query, se hace la busqueda en la base datos y se vuelve a hacer un prompt para dar una respuesta teniendo los datos que pedía el usarío
@@ -34,9 +37,9 @@ Structure:
 ### Variables de entorno utilizadas y necesarias
 
 ```javascript
-MONGO_URI=stringWithCollectionIncluded
-GROQ_API_KEY=apiKey
-LLM_MODEL=nameOfTheLLModel
+MONGO_URI = stringWithCollectionIncluded
+GROQ_API_KEY = apiKey
+LLM_MODEL = nameOfTheLLModel
 ```
 
 # Limites y Errores
