@@ -7,19 +7,29 @@ const BASE_PROMPT =
 const client = new Groq({
 	apiKey: process.env.GROQ_API_KEY,
 })
-
-async function generateQueryWithGPT(message: string): Promise<GPTResponse> {
+function addPreviousMessages(messages, chat) {
+	for (let i = 0; i < chat.length; i++) {
+		if (chat[i].sender === 'user') {
+			messages.push({ role: 'user', content: chat[i].message })
+		} else {
+			messages.push({ role: 'assistant', content: chat[i].message })
+		}
+	}
+	return messages
+}
+async function generateQueryWithGPT(chat): Promise<GPTResponse> {
+	let messages = [
+		{
+			role: 'system',
+			content:
+				BASE_PROMPT +
+				`, capabilities: you can transform questions into a mongodb query with the schema being exactly {"name": String, "type": "Computer"| "Smartphone"| "Tablet"| "Gadgets"| "Accessories", "brand": String , quantity: Number, description: String, price: Number} you are only allowed and required to exclusively respond in a completely valid this JSON with this structure: { "operation":"filter","filter": JSON query, if you use a filter with $ remember to use double quotes for the keys  } or { "operation":"filterByText","text": String for a generic search, this is for a search by name, brand or description } or { "operation":"conversation","message": The response of the text, use this when the question is not a query search }`,
+		},
+	]
+	messages = addPreviousMessages(messages, chat)
 	try {
 		const chatCompletion = await client.chat.completions.create({
-			messages: [
-				{
-					role: 'system',
-					content:
-						BASE_PROMPT +
-						`, capabilities: you can transform questions into a mongodb query with the schema being exactly {"name": String, "type": "Computer"| "Smartphone"| "Tablet"| "Gadgets"| "Accessories", "brand": String , quantity: Number, description: String, price: Number} you are only allowed and required to exclusively respond in a completely valid this JSON with this structure: { "operation":"filter","filter": JSON query, if you use a filter with $ remember to use double quotes for the keys  } or { "operation":"filterByText","text": String for a generic search, this is for a search by name, brand or description } or { "operation":"conversation","message": The response of the text, use this when the question is not a query search }`,
-				},
-				{ role: 'user', content: message },
-			],
+			messages: messages as any,
 			model: 'llama-3.1-70b-versatile',
 		})
 		console.log('QUERY RES :>> ', chatCompletion.choices[0].message.content)
@@ -34,25 +44,25 @@ async function generateQueryWithGPT(message: string): Promise<GPTResponse> {
 }
 //TODO: VALIDATOR TO AVOID OTHER PROMPTS
 
-async function generateAnswerWithGPT(message: string, query: GPTResponse, answer: string | object) {
-	console.log(message, answer)
+async function generateAnswerWithGPT(chat: Chat, query: GPTResponse, answer: string | object) {
 	if (Array.isArray(answer) && answer.length === 0) answer = 'Empty'
 	if (typeof answer === 'object') answer = JSON.stringify(answer)
+	let messages = [
+		{
+			role: 'system',
+			content:
+				BASE_PROMPT +
+				', (Do not mention this part to the client) the given the query :"' +
+				JSON.stringify(query) +
+				"' And the answer being: " +
+				answer,
+		},
+	]
+	messages = addPreviousMessages(messages, chat)
 
 	try {
 		const chatCompletion = await client.chat.completions.create({
-			messages: [
-				{
-					role: 'system',
-					content:
-						BASE_PROMPT +
-						', (Do not mention this part to the client) the given the query :"' +
-						JSON.stringify(query) +
-						"' And the answer being: " +
-						answer,
-				},
-				{ role: 'user', content: message },
-			],
+			messages: messages as any,
 			model: 'llama-3.1-8b-instant',
 		})
 		return chatCompletion.choices[0].message.content
@@ -61,10 +71,10 @@ async function generateAnswerWithGPT(message: string, query: GPTResponse, answer
 	}
 }
 
-export async function chatPrompt(message: string) {
-	const response: GPTResponse = await generateQueryWithGPT(message)
+export async function chatPrompt(chat: Chat) {
+	const response: GPTResponse = await generateQueryWithGPT(chat)
 	console.log('response :>> ', response)
-	let result: any = undefined
+	let result: object | string | undefined = undefined
 	switch (response.operation) {
 		case 'conversation':
 			return response.message
@@ -80,5 +90,5 @@ export async function chatPrompt(message: string) {
 			})
 			break
 	}
-	return generateAnswerWithGPT(message, response, result)
+	return generateAnswerWithGPT(chat, response, result)
 }

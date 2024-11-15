@@ -19,7 +19,12 @@ app.post('/api/chat', async (req, res) => {
 	const chat: Chat = req.body?.chat
 	const message = chat[chat.length - 1].message
 	console.log('message :>> ', message)
-	res.status(200).json({ sender: 'bot', message: await chatPrompt(message), timestamp: Date.now() })
+	res.status(200).json({ sender: 'bot', message: await chatPrompt(chat), timestamp: Date.now() })
+})
+
+app.get('/api/products', async (req, res) => {
+	const products = await Products.find()
+	res.status(200).json(products)
 })
 
 app.listen(3001, () => {
