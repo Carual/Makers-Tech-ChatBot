@@ -1,10 +1,11 @@
 import express from 'express'
 import cors from 'cors'
 import { connectDB } from './config/db.ts'
+import { chatPrompt } from './services/chatbotService.ts'
 import Products from './models/Product.ts'
 
 const app = express()
-await connectDB()
+//await connectDB()
 app.use(express.json())
 
 app.use(
@@ -13,10 +14,11 @@ app.use(
 	}),
 )
 
-app.post('/api/chat', (req, res) => {
-	const chat: Chat = req.body
-	console.log(chat)
-	res.status(200).json({ sender: 'bot', message: 'hola', timestamp: Date.now() })
+app.post('/api/chat', async (req, res) => {
+	const chat: Chat = req.body?.chat
+	const message = chat[chat.length - 1].message
+	console.log('message :>> ', message)
+	res.status(200).json({ sender: 'bot', message: await chatPrompt(message), timestamp: Date.now() })
 })
 
 app.listen(3001, () => {

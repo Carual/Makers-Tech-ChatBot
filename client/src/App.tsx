@@ -7,7 +7,8 @@ function App() {
   const sendMessage = async ( event: React.FormEvent ) => {
     event.preventDefault()
     const message = ((event.target as HTMLFormElement).elements[0] as HTMLInputElement).value
-    const newChat = chat
+    const newChat = chat;
+    ((event.target as HTMLFormElement).elements[0] as HTMLInputElement).value = ''
     newChat.push({ sender: 'user', message, timestamp: Date.now() })
     setChat([...newChat])
     await axios.post('http://localhost:3001/api/chat', {
