@@ -31,6 +31,14 @@ Structure:
 
 ```
 
+### Variables de entorno utilizadas y necesarias
+
+```javascript
+MONGO_URI=stringWithCollectionIncluded
+GROQ_API_KEY=apiKey
+LLM_MODEL=nameOfTheLLModel
+```
+
 # Limites y Errores
 
 1. Debido al riesgo que puede existir al darle acceso a un query a un LLM se colocaron limites de lo que podia o no podia hacer el LLM esto también limita el entendimiento o la interpretación de las preguntas, haciendo que sea proclive a Errores de interpretación por parte del LLM

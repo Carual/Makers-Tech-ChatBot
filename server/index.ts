@@ -27,6 +27,11 @@ app.get('/api/products', async (req, res) => {
 	res.status(200).json(products)
 })
 
+app.use(express.static(import.meta.dirname + '/build'))
+app.get('*', (_, res) => {
+	res.sendFile(import.meta.dirname + '/build/index.html')
+})
+
 app.listen(3001, () => {
 	console.log('Server started on port 3001')
 })

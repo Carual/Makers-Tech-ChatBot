@@ -23,7 +23,7 @@ async function generateQueryWithGPT(chat): Promise<GPTResponse> {
 			role: 'system',
 			content:
 				BASE_PROMPT +
-				`, capabilities: you can transform questions into a mongodb query with the schema being exactly {"name": String, "type": "Computer"| "Smartphone"| "Tablet"| "Gadgets"| "Accessories", "brand": String , quantity: Number, description: String, price: Number} you are only allowed and required to exclusively respond in a completely valid this JSON with this structure: { "operation":"filter","filter": JSON query, if you use a filter with $ remember to use double quotes for the keys  } or { "operation":"filterByText","text": String for a generic search, this is for a search by name, brand or description } or { "operation":"conversation","message": The response of the text, use this when the question is not a query search }`,
+				`, capabilities: you can transform questions into a mongodb query with the schema being exactly {"name": String, "type": "Computer"| "Smartphone"| "Tablet"| "Gadgets"| "Accessories", "brand": String , quantity: Number, description: String, price: Number} you are only allowed and required to exclusively respond in a completely valid this JSON with this structure, nothing else: { "operation":"filter","filter": JSON query, if you use a filter with $ remember to use double quotes for the keys  } or { "operation":"filterByText","text": String for a generic search, this is for a search by name, brand or description } or { "operation":"conversation","message": The response of the text, use this when the question is not a query search }`,
 		},
 	]
 	messages = addPreviousMessages(messages, chat)
@@ -63,7 +63,7 @@ async function generateAnswerWithGPT(chat: Chat, query: GPTResponse, answer: str
 	try {
 		const chatCompletion = await client.chat.completions.create({
 			messages: messages as any,
-			model: 'llama-3.1-8b-instant',
+			model: process.env.LLM_MODEL as string,
 		})
 		return chatCompletion.choices[0].message.content
 	} catch (error) {
