@@ -37,9 +37,9 @@ Structure:
 ### Variables de entorno utilizadas y necesarias
 
 ```javascript
-MONGO_URI = stringWithCollectionIncluded
+MONGO_URI = uriStringWithCollectionIncluded
 GROQ_API_KEY = apiKey
-LLM_MODEL = nameOfTheLLModel
+LLM_MODEL = nameOfTheLLModel // ej: llama-3.1-8b-instant
 ```
 
 # Limites y Errores
